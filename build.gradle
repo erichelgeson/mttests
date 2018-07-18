@@ -65,6 +65,7 @@ bootRun {
     addResources = true
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+    systemProperty "gorm.tenantId", 1
 }
 
 tasks.withType(Test) {
