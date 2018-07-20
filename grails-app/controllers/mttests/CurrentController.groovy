@@ -10,31 +10,42 @@ class CurrentController {
 
     @CurrentTenant
     def with() {
-        render Book.list() as JSON
+        render Book.list() as JSON // Returns only current tenants books as expected
     }
 
-    def none() { // Has the same results as with due to `MultiTenantEventListener`
+    /*
+        Returns only current tenants books without any annotations - unexpected.
+        due to `MultiTenantEventListener`
+     */
+    def none() {
         render Book.list() as JSON
     }
 
     @WithoutTenant
     def without() {
-        render Book.list() as JSON
+        render Book.list() as JSON // Returns all Tenants books as expected
     }
 
+    /*
+        WithoutTenant on Controller
+        CurrentTenant on Service
+        Expect it to only return CurrentTenants books, but returns all tenants books.
+     */
     @WithoutTenant
     def serviceWith() {
-        // with Tenant on service
+        // Service with @CurrentTenant on method
         def books = tenantService.booksCurrentTenant()
+
         // but returns all anyways!
         render books as JSON
     }
 
     @WithoutTenant
     def serviceWithout() { // behaves same as serviceWith
-        // with Tenant on service
+        // Service with @WithoutTenant on method
         def books = tenantService.booksWithoutTenant()
-        // but returns all anyways!
+
+        // returns all
         render books as JSON
     }
 }
